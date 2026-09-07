@@ -11,13 +11,16 @@ def scan_port(target, port, timeout=0.5):
     try:
         result = sock.connect_ex((target, port))
         return result == 0
+
     except socket.error:
         return False
+
     finally:
         sock.close()
 
 
 def scan_range(target, start_port, end_port):
+
     print(f"\n[+] Target: {target}")
     print(f"[+] Port range: {start_port}-{end_port}")
     print("-" * 45)
@@ -25,13 +28,17 @@ def scan_range(target, start_port, end_port):
     open_ports = []
 
     for port in range(start_port, end_port + 1):
+
         if scan_port(target, port):
+
             try:
                 service = socket.getservbyport(port, "tcp")
+
             except OSError:
                 service = "unknown"
 
             print(f"[OPEN] {port}/tcp - {service}")
+
             open_ports.append(port)
 
     print("-" * 45)
@@ -41,22 +48,28 @@ def scan_range(target, start_port, end_port):
 
 
 def main():
+
     parser = argparse.ArgumentParser(
         description="Simple TCP port scanner for authorized lab environments."
     )
 
-    parser.add_argument("target", help="Target hostname or IP address")
+    parser.add_argument(
+        "target",
+        help="Target hostname or IP address"
+    )
+
     parser.add_argument(
         "--start",
         type=int,
         default=1,
-        help="Starting port (default: 1)",
+        help="Starting port (default: 1)"
     )
+
     parser.add_argument(
         "--end",
         type=int,
         default=1024,
-        help="Ending port (default: 1024)",
+        help="Ending port (default: 1024)"
     )
 
     args = parser.parse_args()
@@ -68,9 +81,15 @@ def main():
         parser.error("Ending port must be between 1 and 65535.")
 
     if args.start > args.end:
-        parser.error("Starting port cannot be greater than ending port.")
+        parser.error(
+            "Starting port cannot be greater than ending port."
+        )
 
-    scan_range(args.target, args.start, args.end)
+    scan_range(
+        args.target,
+        args.start,
+        args.end
+    )
 
 
 if __name__ == "__main__":
